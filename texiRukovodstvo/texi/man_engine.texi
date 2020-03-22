@@ -1,0 +1,80 @@
+ENGINE(1)                           OpenSSL                          ENGINE(1)
+
+NAME
+       openssl-engine, engine - механизмы загрузки и запросов
+
+SYNOPSIS
+       openssl engine [ engine... ] [-v] [-vv] [-vvv] [-vvv] [-vvv] [-c] [-t]
+       [-tt] [-pre command] [-post command] [ engine... ]
+
+DESCRIPTION
+       Использование команд для запроса статуса и возможностей указанного движка
+       Движки могут быть указаны до и после всех других флагов командной строки.
+       Запрашиваются только те, которые указаны.
+
+OPTIONS
+       -v -vv -vvv -vvvv
+           Предоставляет информацию о каждом указанном движке.
+           Первый флаг перечисляет все возможные команды управления во время выполнения;
+           вторая добавляет описание каждой команды;
+           третий добавляет флаги ввода;
+           последний вариант добавляет внутренние флаги ввода.
+
+       -c  Перечисляет возможности каждого двигателя.
+
+       -t  Проверяет, доступен ли каждый указанный движок, и отображает ответ.
+
+       -tt Отображает трассировку ошибок для любого недоступного движка.
+
+       -pre command
+       -post command
+           Конфигурация командной строки движка.
+           -pre command передается движку до его загрузки, а
+           -post command передается после загрузки движка.
+           Команда имеет вид cmd:val, где cmd - это команда, а val - это значение
+           для команды. Смотрите пример ниже.
+
+EXAMPLE
+       Чтобы перечислить все команды, доступные для динамического движка:
+
+        $ openssl engine -t -tt -vvvv dynamic
+        (dynamic) Dynamic engine loading support
+             [ unavailable ]
+             SO_PATH: Specifies the path to the new ENGINE shared library
+                  (input flags): STRING
+             NO_VCHECK: Specifies to continue even if version checking fails (boolean)
+                  (input flags): NUMERIC
+             ID: Specifies an ENGINE id name for loading
+                  (input flags): STRING
+             LIST_ADD: Whether to add a loaded ENGINE to the internal list (0=no,1=yes,2=mandatory)
+                  (input flags): NUMERIC
+             DIR_LOAD: Specifies whether to load from 'DIR_ADD' directories (0=no,1=yes,2=mandatory)
+                  (input flags): NUMERIC
+             DIR_ADD: Adds a directory from which ENGINEs can be loaded
+                  (input flags): STRING
+             LOAD: Load up the ENGINE specified by other settings
+                  (input flags): NO_INPUT
+
+       Чтобы перечислить возможности движка rsax:
+
+        $ openssl engine -c
+        (rsax) RSAX engine support
+         [RSA]
+        (dynamic) Dynamic engine loading support
+
+ENVIRONMENT
+       OPENSSL_ENGINES
+           Путь к каталогу движков.
+
+SEE ALSO
+       config(5)
+
+COPYRIGHT
+       Copyright 2016-2018 The OpenSSL Project Authors. All Rights Reserved.
+
+       Licensed under the OpenSSL license (the "License").  You may not use
+       this file except in compliance with the License.  You can obtain a copy
+       in the file LICENSE in the source distribution or at
+       <https://www.openssl.org/source/license.html>.
+
+1.1.1a                            2018-11-20                         ENGINE(1)

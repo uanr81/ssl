@@ -1,0 +1,67 @@
+NSEQ(1)                             OpenSSL                            NSEQ(1)
+
+NAME
+       openssl-nseq, nseq - создать или проверить последовательность сертификатов Netscape
+
+SYNOPSIS
+       openssl nseq [-help] [-in filename] [-out filename] [-toseq]
+
+DESCRIPTION
+       Команда nseq берет файл, содержащий последовательность сертификатов
+       Netscape, и распечатывает содержащиеся в нем сертификаты или берет
+       файл сертификатов и преобразует его в последовательность сертификатов
+       Netscape.
+
+OPTIONS
+       -help
+           Распечатайте сообщение об использовании.
+
+       -in filename
+           Здесь указывается имя файла для чтения или стандартный ввод, если
+           эта опция не указана.
+
+       -out filename
+           Задает имя выходного файла или стандартный вывод по умолчанию.
+
+       -toseq
+           Обычно последовательность сертификатов Netscape вводится, а выходные
+           данные - содержащиеся в ней сертификаты. С опцией -toseq ситуация меняется:
+           последовательность файлов сертификатов Netscape создается из
+           файла сертификатов.
+
+EXAMPLES
+       Вывести сертификаты в последовательности сертификатов Netscape
+
+        openssl nseq -in nseq.pem -out certs.pem
+
+       Создать последовательность сертификатов Netscape
+
+        openssl nseq -in certs.pem -toseq -out nseq.pem
+
+NOTES
+       Форма в кодировке PEM использует те же верхние и нижние колонтитулы,
+       что и сертификат:
+
+        -----BEGIN CERTIFICATE-----
+        -----END CERTIFICATE-----
+
+       Последовательность сертификатов Netscape - это специальный формат
+       Netscape, который можно отправлять в браузеры в качестве альтернативы
+       стандартному формату PKCS#7, когда несколько сертификатов отправляются
+       в браузер: например, во время регистрации сертификата. Например, он
+       используется сервером сертификатов Netscape.
+
+BUGS
+       Эта программа нуждается в нескольких дополнительных параметрах: например,
+       разрешить входные и выходные файлы DER или PEM и разрешить использование
+       нескольких файлов сертификатов.
+
+COPYRIGHT
+       Copyright 2000-2017 The OpenSSL Project Authors. All Rights Reserved.
+
+       Licensed under the OpenSSL license (the "License").  You may not use
+       this file except in compliance with the License.  You can obtain a copy
+       in the file LICENSE in the source distribution or at
+       <https://www.openssl.org/source/license.html>.
+
+1.1.1a                            2018-11-20                           NSEQ(1)

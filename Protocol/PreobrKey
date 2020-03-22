@@ -1,0 +1,89 @@
+Формат PEM описан в RFC7468 .
+
+команды
+
+Конвертировать открытый ключ RSA между форматами X.509 и PKCS # 1
+
+openssl rsa -pubin -in public.pem -RSAPublicKey_out
+openssl rsa -RSAPublicKey_in -in pkcs1-public.pem -pubout
+
+Извлечь открытый ключ из закрытого ключа RSA
+
+openssl rsa -in private.pem -out public.pem -pubout
+
+Извлечь открытый ключ из CSR X.509
+
+openssl req -in cert.csr -pubkey -noout
+
+Извлечь открытый ключ из сертификата X.509
+
+openssl x509 -in cert.crt -inform pem -pubkey -noout
+openssl x509 -in cert.cer -inform der -pubkey -noout
+
+Конвертировать сертификат X.509 между форматами DER и PEM
+
+openssl x509 -in cert.cer -inform der -out cert.crt -outform pem
+openssl x509 -in cert.crt -inform pem -out cert.cer -outform der
+
+********************************************************************
+RFC5280 (PKI X.509)
+Помимо всего прочего, определяет формат для любого открытого ключа
+
+-----BEGIN PUBLIC KEY-----
+SubjectPublicKeyInfo
+-----END PUBLIC KEY-----
+
+**********************************************************************
+RFC8017 (PKCS #1 v.2.2)
+Определяет традиционный формат для ключей RSA. Две структуры:
+
+-----BEGIN RSA PRIVATE KEY-----
+RSAPrivateKey
+-----END RSA PRIVATE KEY-----
+
+и
+
+-----BEGIN RSA PUBLIC KEY-----
+RSAPublicKey
+-----END RSA PUBLIC KEY-----
+
+Команды
+
+Сформировать RSA закрытый ключ
+
+openssl genrsa -out private.pem 2048
+
+Извлечь открытый ключ из RSA закрытого ключа
+
+openssl rsa -in private.pem -out public.pem -RSAPublicKey_out
+
+RFC5958 (предшественник PKCS#8, это .p8)
+
+Определяет формат для любого ключа. Две структуры:
+
+-----BEGIN PRIVATE KEY-----
+PrivateKeyInfo ::= OneAsymmetricKey
+-----END PRIVATE KEY-----
+
+и
+
+-----BEGIN ENCRYPTED PRIVATE KEY-----
+EncryptedPrivateKeyInfo
+-----END ENCRYPTED PRIVATE KEY-----
+
+Соответствующие форматы PEM описаны в разделе RFC7468 10 и раздела 11.
+
+команды
+
+Конвертировать PKCS #1 
+→
+ PKCS #8
+
+openssl pkcs8 -in private-pkcs1.pem -topk8 -out private-pkcs8.pem -nocrypt
+openssl pkcs8 -in private-pkcs1.pem -topk8 -out private-pkcs8-enc.pem
+
+Convert PKCS #8 
+→
+ PKCS #1
+
+openssl rsa -in private-pkcs8.pem -out private-pkcs1.pem

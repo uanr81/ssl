@@ -1,0 +1,9 @@
+Получить хеш открытого ключа из открытого ключа SSH
+
+ssh-keygen -e -mPKCS8 -f ./sslPubRFC4716.pub |openssl pkey -pubin -pubout -outform DER|openssl dgst -sha256 -hex|sed 's/(stdin)= //'
+
+Получить хеш открытого ключа из открытого ключа SSL
+openssl pkey -in ./sslPubKey -pubin -pubout -outform DER|openssl dgst -sha256 -hex|sed 's/(stdin)= //'
+
+Получить хеш открытого ключа из закрытого ключа SSL
+openssl pkey -in ./flZakrKey -pubout -outform DER|openssl dgst -sha256 -hex|sed 's/(stdin)= //'

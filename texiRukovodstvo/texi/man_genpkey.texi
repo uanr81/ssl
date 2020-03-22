@@ -1,0 +1,271 @@
+GENPKEY(1)                          OpenSSL                         GENPKEY(1)
+
+NAME
+       openssl-genpkey, genpkey - создать личный ключ
+
+SYNOPSIS
+       openssl genpkey [-help] [-out filename] [-outform PEM|DER] [-pass arg]
+       [-cipher] [-engine id] [-paramfile file] [-algorithm alg] [-pkeyopt
+       opt:value] [-genparam] [-text]
+
+DESCRIPTION
+       Команда genpkey генерирует закрытый ключ.
+
+OPTIONS
+       -help
+           Распечатайте сообщение об использовании.
+
+       -out filename
+           Выведите ключ в указанный файл (filename). Если этот аргумент не указан,
+           то используется стандартный вывод.
+
+       -outform DER|PEM
+           Это определяет формат вывода DER или PEM. Формат по умолчанию - PEM.
+
+       -pass arg
+           Исходный файл с паролем источника. Для получения дополнительной информации
+           о формате arg см. Раздел PASS PHRASE ARGUMENTS в openssl(1)..
+
+       -cipher
+           Эта опция шифрует закрытый ключ с помощью прилагаемого шифра. Любое имя
+           алгоритма, принятое EVP_get_cipherbyname(), является приемлемым,
+           например, des3.
+
+       -engine id
+           Указание обработчика (по его уникальной строке id) заставит genpkey
+           попытаться получить функциональную ссылку на указанный обработчик, тем
+           самым инициализируя его при необходимости. Движок будет установлен по
+           умолчанию для всех доступных алгоритмов. Если этот параметр используется,
+           он должен предшествовать всем остальным.
+
+       -algorithm alg
+           Алгоритм с открытым ключом, такой как RSA, DSA или DH. Если используется
+           эта опция, она должна предшествовать любой опции -pkeyopt. Опции -paramfile
+           и -algorithm являются взаимоисключающими. Двигатели могут добавлять алгоритмы
+           в дополнение к стандартным встроенным.
+
+           Допустимые имена встроенных алгоритмов для генерации закрытых ключей: RSA,
+           RSA-PSS, EC, X25519, X448, ED25519 и ED448.
+
+           Допустимые имена встроенных алгоритмов для генерации параметров (see the
+           -genparam option) являются DH, DSA и EC.
+
+           Обратите внимание, что имя алгоритма X9.42 DH может использоваться как
+           синоним алгоритма DH. Они идентичны и не указывают тип параметров, которые
+           будут сгенерированы. Используйте параметр dh_paramgen_type, чтобы указать,
+           требуются ли параметры PKCS#3 или X9.42 DH. Смотрите
+           "DH Parameter Generation Options" ниже для более подробной информации.
+
+       -pkeyopt opt:value
+           Установите опцию алгоритма открытого ключа opt в значение. Точный набор
+           поддерживаемых параметров зависит от используемого алгоритма открытого
+           ключа и его реализации. Смотри "KEY GENERATION OPTIONS" и
+           "PARAMETER GENERATION OPTIONS" ниже для более подробной информации.
+
+       -genparam
+           Создайте набор параметров вместо закрытого ключа. Если используется эта
+           опция, она должна предшествовать любой опции -algorithm, -paramfile
+           или -pkeyopt.
+
+       -paramfile filename
+           Некоторые алгоритмы открытого ключа генерируют закрытый ключ на основе
+           набора параметров. Они могут поставляться с использованием этой опции.
+           Если используется эта опция, используемый алгоритм открытого ключа
+           определяется параметрами. Если используется эта опция, она должна
+           предшествовать любой опции -pkeyopt. Опции -paramfile и -algorithm
+           являются взаимоисключающими.
+
+       -text
+           Напечатайте (незашифрованное) текстовое представление закрытых и
+           открытых ключей и параметров вместе со структурой PEM или DER.
+
+KEY GENERATION OPTIONS
+       Параметры, поддерживаемые каждым алгоритмом и, в действительности, каждой
+       реализацией алгоритма могут различаться. Варианты реализации OpenSSL подробно
+       описаны ниже. Для алгоритмов X25519, X448, ED25519 или ED448 не определены
+       параметры генерации ключей.
+
+   RSA Key Generation Options
+       rsa_keygen_bits:numbits
+           Количество бит в сгенерированном ключе. Если не указано, используется 1024.
+
+       rsa_keygen_primes:numprimes
+           Количество простых чисел в сгенерированном ключе. Если не указано,
+           используется 2.
+
+       rsa_keygen_pubexp:value
+           Значение публичного показателя RSA. Это может быть большое десятичное или
+           шестнадцатеричное значение, если ему предшествует 0x. Значение по
+           умолчанию - 65537.
+
+   RSA-PSS Key Generation Options
+       Примечание: по умолчанию ключ RSA-PSS не имеет ограничений по параметрам.
+
+       rsa_keygen_bits:numbits, rsa_keygen_primes:numprimes,
+       rsa_keygen_pubexp:value
+           Эти параметры имеют то же значение, что и алгоритм RSA.
+
+       rsa_pss_keygen_md:digest
+           Если установлен, ключ ограничен и может использовать только дайджест
+           для подписи.
+
+       rsa_pss_keygen_mgf1_md:digest
+           Если установлено, ключ ограничен и может использовать только дайджест в
+           качестве параметра MGF1.
+
+       rsa_pss_keygen_saltlen:len
+           Если установлено, ключ ограничен, а len определяет минимальную длину соли.
+
+   EC Key Generation Options
+       Опции генерации ключа EC также можно использовать для генерации параметров.
+
+       ec_paramgen_curve:curve
+           Кривая ЕС для использования. OpenSSL поддерживает имена кривых NIST,
+           такие как "P-256".
+
+       ec_param_enc:encoding
+           Кодировка для использования в качестве параметров. Параметр "encoding"
+           должен быть либо "named_curve" или "explicit". Значением по умолчанию
+           является "named_curve".
+
+PARAMETER GENERATION OPTIONS
+       Параметры, поддерживаемые каждым алгоритмом и, в действительности, каждой
+       реализацией алгоритма могут различаться. Варианты реализации OpenSSL
+       подробно описаны ниже.
+
+   DSA Parameter Generation Options
+       dsa_paramgen_bits:numbits
+           Количество бит в сгенерированном простом числе. Если не указано,
+           используется 1024.
+
+       dsa_paramgen_q_bits:numbits
+           Количество бит в параметре q. Должно быть одно из 160, 224 или 256.
+           Если не указано 160, используется.
+
+       dsa_paramgen_md:digest
+           Дайджест для использования при генерации параметров. Должно быть одно
+           из sha1, sha224 или sha256. Если установлено, то число битов в q будет
+           соответствовать выходному размеру указанного дайджеста, а параметр
+           dsa_paramgen_q_bits будет игнорироваться. Если не задано, то будет
+           использоваться дайджест, который выдает выходные данные, соответствующие
+           числу битов в q, то есть sha1, если длина q равна 160, sha224, если
+           это 224, или sha256, если это 256.
+
+   DH Parameter Generation Options
+       dh_paramgen_prime_len:numbits
+           Количество бит в простом параметре p. По умолчанию это 1024.
+
+       dh_paramgen_subprime_len:numbits
+           Количество бит в дополнительном простом параметре q. По умолчанию
+           используется значение 256, если простое число имеет длину не менее
+           2048 бит, или 160 в противном случае. Актуально только если используется
+           вместе с опцией dh_paramgen_type для генерации параметров X9.42 DH.
+
+       dh_paramgen_generator:value
+           Значение, используемое для генератора g. По умолчанию 2.
+
+       dh_paramgen_type:value
+           Тип параметров DH для генерации. Используйте 0 для PKCS#3 DH и 1 для
+           X9.42 DH. По умолчанию 0.
+
+       dh_rfc5114:num
+           Если эта опция установлена, то вместо генерации новых параметров
+           используются соответствующие параметры RFC5114. Значение num может
+           принимать значения 1, 2 или 3, соответствующие параметрам RFC5114 DH,
+           состоящим из 1024-битной группы с 160-битной подгруппой, 2048-битной
+           группы с 224-битной подгруппой и 2048-битной группы с 256-битной подгруппой,
+           как упомянуто в разделах 2.1, 2.2 RFC5114 и 2,3 соответственно. Если он
+           присутствует, он переопределяет все остальные параметры параметра DH.
+
+   EC Parameter Generation Options
+       Параметры генерации параметров EC такие же, как и для генерации ключей.
+       Смотрите "EC Key Generation Options" выше.
+
+NOTES
+       Использование программы genpkey поощряется по сравнению с утилитами,
+       специфичными для алгоритма, потому что могут использоваться дополнительные
+       опции алгоритма и предоставляемые ENGINE алгоритмы.
+
+EXAMPLES
+       Сгенерируйте закрытый ключ RSA, используя параметры по умолчанию:
+
+        openssl genpkey -algorithm RSA -out key.pem
+
+       Зашифруйте выходной секретный ключ, используя 128-битный AES и
+       пароль "hello":
+
+        openssl genpkey -algorithm RSA -out key.pem -aes-128-cbc -pass pass:hello
+
+       Создайте 2048-битный ключ RSA, используя 3 в качестве
+       открытого показателя:
+
+        openssl genpkey -algorithm RSA -out key.pem \
+            -pkeyopt rsa_keygen_bits:2048 -pkeyopt rsa_keygen_pubexp:3
+
+       Генерация 2048-битных параметров DSA:
+
+        openssl genpkey -genparam -algorithm DSA -out dsap.pem \
+            -pkeyopt dsa_paramgen_bits:2048
+
+       Генерация ключа DSA из параметров:
+
+        openssl genpkey -paramfile dsap.pem -out dsakey.pem
+
+       Генерировать 2048-битные параметры DH:
+
+        openssl genpkey -genparam -algorithm DH -out dhp.pem \
+            -pkeyopt dh_paramgen_prime_len:2048
+
+       Generate 2048 bit X9.42 DH parameters:
+
+        openssl genpkey -genparam -algorithm DH -out dhpx.pem \
+            -pkeyopt dh_paramgen_prime_len:2048 \
+            -pkeyopt dh_paramgen_type:1
+
+       Вывод RFC5114 2048-битных параметров DH с 224-битной подгруппой:
+
+        openssl genpkey -genparam -algorithm DH -out dhp.pem -pkeyopt dh_rfc5114:2
+
+       Создать ключ DH из параметров:
+
+        openssl genpkey -paramfile dhp.pem -out dhkey.pem
+
+       Генерация параметров ЕС:
+
+        openssl genpkey -genparam -algorithm EC -out ecp.pem \
+               -pkeyopt ec_paramgen_curve:secp384r1 \
+               -pkeyopt ec_param_enc:named_curve
+
+       Генерация ключа EC из параметров:
+
+        openssl genpkey -paramfile ecp.pem -out eckey.pem
+
+       Генерация ключа EC напрямую:
+
+        openssl genpkey -algorithm EC -out eckey.pem \
+               -pkeyopt ec_paramgen_curve:P-384 \
+               -pkeyopt ec_param_enc:named_curve
+
+       Создайте закрытый ключ X25519:
+
+        openssl genpkey -algorithm X25519 -out xkey.pem
+
+       Создайте закрытый ключ ED448:
+
+        openssl genpkey -algorithm ED448 -out xkey.pem
+
+HISTORY
+       В OpenSSL 1.0.2 была добавлена ​​возможность использовать имена кривых
+       NIST и непосредственно генерировать ключ EC. Возможность генерировать
+       ключи X25519 была добавлена ​​в OpenSSL 1.1.0. Возможность генерировать
+       ключи X448, ED25519 и ED448 была добавлена ​​в OpenSSL 1.1.1.
+
+COPYRIGHT
+       Copyright 2006-2018 The OpenSSL Project Authors. All Rights Reserved.
+
+       Licensed under the OpenSSL license (the "License").  You may not use
+       this file except in compliance with the License.  You can obtain a copy
+       in the file LICENSE in the source distribution or at
+       <https://www.openssl.org/source/license.html>.
+
+1.1.1a                            2018-11-20                        GENPKEY(1)

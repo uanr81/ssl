@@ -1,0 +1,39 @@
+ERRSTR(1)                           OpenSSL                          ERRSTR(1)
+
+NAME
+       openssl-errstr, errstr - коды ошибок поиска
+
+SYNOPSIS
+       openssl errstr error_code
+
+DESCRIPTION
+       Иногда приложение не загружает сообщение об ошибке, и будут доступны
+       только числовые формы. Утилита errstr может использоваться для отображения
+       значения шестнадцатеричного кода. Шестнадцатеричный код - это
+       шестнадцатеричные цифры после второго двоеточия.
+
+OPTIONS
+       Нет.
+
+EXAMPLE
+       Код ошибки:
+
+        27594:error:2006D080:lib(32):func(109):reason(128):bss_file.c:107:
+
+       может отображаться с помощью:
+
+        openssl errstr 2006D080
+
+       выдать сообщение об ошибке:
+
+        error:2006D080:BIO routines:BIO_new_file:no such file
+
+COPYRIGHT
+       Copyright 2004-2016 The OpenSSL Project Authors. All Rights Reserved.
+
+       Licensed under the OpenSSL license (the "License").  You may not use
+       this file except in compliance with the License.  You can obtain a copy
+       in the file LICENSE in the source distribution or at
+       <https://www.openssl.org/source/license.html>.
+
+1.1.1a                            2018-11-20                         ERRSTR(1)
